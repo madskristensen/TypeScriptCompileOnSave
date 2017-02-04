@@ -11,6 +11,8 @@ The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated
 
 See the [change log](CHANGELOG.md) for changes and road map.
 
+**Note!** This extension only works on the latest version of Visual Studio 2017 for ASP.NET Core projects.
+
 ## Content
 
 - Enable transpilation
