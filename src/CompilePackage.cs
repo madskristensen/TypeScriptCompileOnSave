@@ -8,15 +8,20 @@ using Tasks = System.Threading.Tasks;
 namespace TypeScriptCompileOnSave
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [Guid(PackageGuids.guidCompilePackageString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(PackageGuids.guidAutoLoadString)]
     [ProvideUIContextRule(PackageGuids.guidAutoLoadString,
-    name: "Auto load",
-    expression: "aspnet & typescript & (js | jsx)",
-    termNames: new[] { "aspnet", "typescript", "js", "jsx" },
-    termValues: new[] { "ActiveProjectCapability:DotNetCoreWeb", "ActiveProjectCapability:TypeScript", "HierSingleSelectionName:.js$", "HierSingleSelectionName:.jsx$" })]
+        name: "Auto load",
+        expression: "aspnet & typescript & (js | jsx)",
+        termNames: new[] { "aspnet", "typescript", "js", "jsx" },
+        termValues: new[] {
+            "ActiveProjectCapability:DotNetCoreWeb",
+            "ActiveProjectCapability:TypeScript",
+            "HierSingleSelectionName:.js$",
+            "HierSingleSelectionName:.jsx$"
+    })]
     public sealed class CompilePackage : AsyncPackage
     {
         protected override async Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

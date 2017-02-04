@@ -3,7 +3,6 @@
 
   <Extern href="stdidcmd.h"/>
   <Extern href="vsshlids.h"/>
-  <Include href="KnownImageIds.vsct" />
 
   <Commands package="guidCompilePackage">
     <Groups>
@@ -15,8 +14,6 @@
     <Buttons>
       <Button guid="guidCompilePackageCmdSet" id="AddConfigFileId" priority="0x0100" type="Button">
         <Parent guid="guidCompilePackageCmdSet" id="MyMenuGroup" />
-        <!--<Icon guid="ImageCatalogGuid" id="TriggerScript" />
-        <CommandFlag>IconIsMoniker</CommandFlag>-->
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -26,11 +23,6 @@
       </Button>
     </Buttons>
   </Commands>
-
-  <!--<VisibilityConstraints>
-    <VisibilityItem guid="guidCompilePackageCmdSet" id="AddConfigFileId" context="guidAutoLoad">
-    </VisibilityItem>
-  </VisibilityConstraints>-->
 
   <Symbols>
     <GuidSymbol name="guidCompilePackage" value="{92479255-4cce-4754-9caa-a0c47a10e055}" />
