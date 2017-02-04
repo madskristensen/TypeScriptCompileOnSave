@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace TypeScriptCompileOnSave
 {
@@ -56,7 +57,7 @@ namespace TypeScriptCompileOnSave
 
             button.Visible = true;
 
-            if (VsHelpers.FileExistInOrAbove(fileName, "tsconfig.json", out string cwd))
+            if (VsHelpers.FileExistAtOrAbove(fileName, "tsconfig.json", out string cwd))
             {
                 button.Text = "Transpile to JavaScript (tsconfig.json found)";
                 button.Enabled = false;
@@ -77,22 +78,28 @@ namespace TypeScriptCompileOnSave
 
             if (Directory.Exists(projectRoot))
             {
-                string sourceDir = Path.GetDirectoryName(_item.FileNames[1]);
-                string sourceExt = Path.GetExtension(_item.FileNames[1]);
-                string glob = sourceDir.Substring(projectRoot.Length + 1).Replace("\\", "/") + $"/**/*{sourceExt}";
-                string configPath = Path.Combine(projectRoot, Constants.ConfigFileName);
-                string content = string.Format(Constants.DefaultTsConfig, glob);
+                string configPath = await CreateConfigFile(projectRoot);
 
-                File.WriteAllText(configPath, content);
-
-                _item.DTE.ItemOperations.OpenFile(configPath);
-                _item.DTE.ExecuteCommand("SolutionExplorer.SyncWithActiveDocument");
-
-                if (Transpiler.CanCompile(_item, out string cwd))
-                {
-                    await Transpiler.Transpile(cwd);
-                }
+                VsHelpers.OpenFileAndSelect(_item.DTE, configPath);
+                await Transpiler.Transpile(projectRoot);
             }
+        }
+
+        private async Task<string> CreateConfigFile(string projectRoot)
+        {
+            string sourceDir = Path.GetDirectoryName(_item.FileNames[1]);
+            string sourceExt = Path.GetExtension(_item.FileNames[1]);
+            string glob = sourceDir.Substring(projectRoot.Length + 1).Replace("\\", "/") + $"/**/*{sourceExt}";
+            string configPath = Path.Combine(projectRoot, Constants.ConfigFileName);
+            string content = string.Format(Constants.DefaultTsConfig, glob);
+
+            using (var fs = new FileStream(configPath, FileMode.Create))
+            {
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(content);
+                await fs.WriteAsync(buffer, 0, buffer.Length);
+            }
+
+            return configPath;
         }
     }
 }

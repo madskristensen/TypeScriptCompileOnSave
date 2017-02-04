@@ -6,7 +6,7 @@
 - [x] Button to create *tsconfig.json*
 - [x] Honor `"compileOnSave": false`
 - [x] Make transpiling async
-- [ ] Updated [readme.md](README.md) with screenshots
+- [x] Updated [readme.md](README.md) with screenshots
 
 Features that have a checkmark are complete and available for
 download in the

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.IO;
@@ -14,7 +15,7 @@ namespace TypeScriptCompileOnSave
             return (TReturnType)ServiceProvider.GlobalProvider.GetService(typeof(TServiceType));
         }
 
-        public static bool FileExistInOrAbove(string sourceFile, string fileNameToLookFor, out string directory)
+        public static bool FileExistAtOrAbove(string sourceFile, string fileNameToLookFor, out string directory)
         {
             directory = null;
             var currentDir = new DirectoryInfo(Path.GetDirectoryName(sourceFile));
@@ -35,6 +36,7 @@ namespace TypeScriptCompileOnSave
             return false;
         }
 
+        // From http://stackoverflow.com/a/17936541/1074470
         public static Task<bool> WaitForExitAsync(this System.Diagnostics.Process process, TimeSpan timeout)
         {
             ManualResetEvent processWaitObject = new ManualResetEvent(false)
@@ -62,6 +64,12 @@ namespace TypeScriptCompileOnSave
                 true /* executeOnlyOnce */);
 
             return tcs.Task;
+        }
+
+        public static void OpenFileAndSelect(this DTE dte, string file)
+        {
+            dte.ItemOperations.OpenFile(file);
+            dte.ExecuteCommand("SolutionExplorer.SyncWithActiveDocument");
         }
     }
 }

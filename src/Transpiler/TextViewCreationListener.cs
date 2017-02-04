@@ -47,7 +47,7 @@ namespace TypeScriptCompileOnSave
 
             try
             {
-                var canCompile = Transpiler.CanCompile(item, out string cwd);
+                var canCompile = item.CanTranspile(out string cwd);
 
                 if (!canCompile)
                     return;

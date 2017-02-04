@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TypeScriptCompileOnSave
 {
-    public class Transpiler
+    public static class Transpiler
     {
         private static bool _isProcessing;
 
@@ -32,6 +32,71 @@ namespace TypeScriptCompileOnSave
             {
                 statusBar.Clear();
             }
+        }
+
+        public static bool CanTranspile(this ProjectItem item, out string cwd)
+        {
+            cwd = null;
+
+            // Already running
+            if (_isProcessing)
+                return false;
+
+            string fileName = item.FileNames[1];
+
+            try
+            {
+                // Not the right file extension
+                if (!IsFileSupported(fileName))
+                    return false;
+
+                // File not in the right project type
+                if (!IsProjectSupported(item.ContainingProject))
+                    return false;
+
+                // tsconfig.json doesn't exist
+                if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out cwd))
+                    return false;
+
+                // compileOnSave is set to false
+                string configPath = Path.Combine(cwd, Constants.ConfigFileName);
+                if (!IsCompileOnSaveEnabled(configPath))
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+                return false;
+            }
+        }
+
+        public static bool IsFileSupported(string fileName)
+        {
+            string ext = Path.GetExtension(fileName);
+            return Constants.FileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public static bool IsProjectSupported(Project project)
+        {
+            return Constants.ProjectGuids.Contains(project?.Kind, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private static bool IsCompileOnSaveEnabled(string tsconfigFile)
+        {
+            if (!File.Exists(tsconfigFile))
+                return false;
+
+            string json = File.ReadAllText(tsconfigFile);
+            var obj = JObject.Parse(json);
+
+            var prop = obj["compileOnSave"];
+
+            if (prop == null)
+                return true;
+
+            return prop.Value<bool>();
         }
 
         private static async Task<TranspilerResult> StartProcess(string cwd)
@@ -69,71 +134,6 @@ namespace TypeScriptCompileOnSave
             {
                 _isProcessing = false;
             }
-        }
-
-        public static bool CanCompile(ProjectItem item, out string cwd)
-        {
-            cwd = null;
-
-            // Already running
-            if (_isProcessing)
-                return false;
-
-            string fileName = item.FileNames[1];
-
-            try
-            {
-                // Not the right file extension
-                if (!IsFileSupported(fileName))
-                    return false;
-
-                // File not in the right project type
-                if (!IsProjectSupported(item.ContainingProject))
-                    return false;
-
-                // tsconfig.json doesn't exist
-                if (!VsHelpers.FileExistInOrAbove(fileName, Constants.ConfigFileName, out cwd))
-                    return false;
-
-                // compileOnSave is set to false
-                string configPath = Path.Combine(cwd, Constants.ConfigFileName);
-                if (!IsCompileOnSaveEnabled(configPath))
-                    return false;
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-                return false;
-            }
-        }
-
-        public static bool IsCompileOnSaveEnabled(string tsconfigFile)
-        {
-            if (!File.Exists(tsconfigFile))
-                return false;
-
-            string json = File.ReadAllText(tsconfigFile);
-            var obj = JObject.Parse(json);
-
-            var prop = obj["compileOnSave"];
-
-            if (prop == null)
-                return true;
-
-            return prop.Value<bool>();
-        }
-
-        public static bool IsFileSupported(string fileName)
-        {
-            string ext = Path.GetExtension(fileName);
-            return Constants.FileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
-        }
-
-        public static bool IsProjectSupported(Project project)
-        {
-            return Constants.ProjectGuids.Contains(project?.Kind, StringComparer.OrdinalIgnoreCase);
         }
 
         private static string GetTscExe()
