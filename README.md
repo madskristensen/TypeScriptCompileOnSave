@@ -1,10 +1,9 @@
 # TypeScript Compile On Save
 
-<!-- Replace this badge with your own-->
-[![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools)
+[![Build status](https://ci.appveyor.com/api/projects/status/oo7iap01bc2tihv5?svg=true)](https://ci.appveyor.com/project/madskristensen/typescriptcompileonsave)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
+Download this extension from the [Marketplace](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
 or get the [CI build](http://vsixgallery.com/extension/d6330ef4-ab82-4ab1-9828-4e43639e7521/).
 
 ---------------------------------------

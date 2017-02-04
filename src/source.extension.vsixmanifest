@@ -4,7 +4,9 @@
     <Identity Id="d6330ef4-ab82-4ab1-9828-4e43639e7521" Version="0.1" Language="en-US" Publisher="Mads Kristensen" />
     <DisplayName>TypeScript Compile On Save</DisplayName>
     <Description xml:space="preserve">Automatically compiles .js and .jsx files on save when they are hooked up to the TypeScript compiler using tsconfig.json</Description>
+    <MoreInfo>https://github.com/madskristensen/TypeScriptCompileOnSave</MoreInfo>
     <License>Resources\LICENSE</License>
+    <ReleaseNotes>https://github.com/madskristensen/TypeScriptCompileOnSave/blob/master/CHANGELOG.md</ReleaseNotes>
     <Icon>Resources\Icon.png</Icon>
     <PreviewImage>Resources\Icon.png</PreviewImage>
     <Tags>typescript, javascript, jsx, tsx, compile</Tags>
