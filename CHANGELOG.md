@@ -2,6 +2,7 @@
 
 - [x] Write to the status bar when transpiling
 - [x] Only run transpiler when needed
+- [x] New logo
 
 Features that have a checkmark are complete and available for
 download in the
