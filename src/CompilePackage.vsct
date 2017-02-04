@@ -3,6 +3,7 @@
 
   <Extern href="stdidcmd.h"/>
   <Extern href="vsshlids.h"/>
+  <Include href="KnownImageIds.vsct" />
 
   <Commands package="guidCompilePackage">
     <Groups>
@@ -14,9 +15,12 @@
     <Buttons>
       <Button guid="guidCompilePackageCmdSet" id="AddConfigFileId" priority="0x0100" type="Button">
         <Parent guid="guidCompilePackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="TriggerScript" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
           <ButtonText>Transpile to JavaScript</ButtonText>
         </Strings>

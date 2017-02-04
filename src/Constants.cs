@@ -4,6 +4,7 @@ namespace TypeScriptCompileOnSave
 {
     public class Constants
     {
+        public const int CompileTimeout = 10; // seconds
         public const string ConfigFileName = "tsconfig.json";
         public static string TscLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\Microsoft SDKs\TypeScript\");
 

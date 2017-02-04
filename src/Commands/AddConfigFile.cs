@@ -58,12 +58,12 @@ namespace TypeScriptCompileOnSave
 
             if (VsHelpers.FileExistInOrAbove(fileName, "tsconfig.json", out string cwd))
             {
-                button.Checked = true;
+                button.Text = "Transpile to JavaScript (tsconfig.json found)";
                 button.Enabled = false;
             }
             else
             {
-                button.Checked = false;
+                button.Text = "Transpile to JavaScript";
                 button.Enabled = true;
             }
         }

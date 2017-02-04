@@ -17,7 +17,6 @@ namespace TypeScriptCompileOnSave
         private ITextDocumentFactoryService DocumentService { get; set; }
 
         private static DTE2 _dte = VsHelpers.GetService<DTE, DTE2>();
-        private bool _canCompile = true;
 
         public void TextViewCreated(IWpfTextView view)
         {
@@ -38,7 +37,7 @@ namespace TypeScriptCompileOnSave
 
         private async void DocumentSaved(object sender, TextDocumentFileActionEventArgs e)
         {
-            if (!_canCompile || e.FileActionType != FileActionTypes.ContentSavedToDisk)
+            if (e.FileActionType != FileActionTypes.ContentSavedToDisk)
                 return;
 
             var document = (ITextDocument)sender;
@@ -48,9 +47,9 @@ namespace TypeScriptCompileOnSave
 
             try
             {
-                _canCompile = Transpiler.CanCompile(item, out string cwd);
+                var canCompile = Transpiler.CanCompile(item, out string cwd);
 
-                if (!_canCompile)
+                if (!canCompile)
                     return;
 
                 await Transpiler.Transpile(cwd);

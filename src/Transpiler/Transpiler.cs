@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -52,13 +53,10 @@ namespace TypeScriptCompileOnSave
                     WindowStyle = ProcessWindowStyle.Hidden
                 };
 
-                await Task.Run(() =>
+                using (var process = System.Diagnostics.Process.Start(start))
                 {
-                    using (System.Diagnostics.Process.Start(start))
-                    {
-                        // Makes sure the process handle is disposed
-                    }
-                });
+                    await process.WaitForExitAsync(TimeSpan.FromSeconds(Constants.CompileTimeout));
+                }
 
                 return TranspilerResult.Success;
             }
@@ -94,7 +92,12 @@ namespace TypeScriptCompileOnSave
                     return false;
 
                 // tsconfig.json doesn't exist
-                if (!VsHelpers.FileExistInOrAbove(fileName, "tsconfig.json", out cwd))
+                if (!VsHelpers.FileExistInOrAbove(fileName, Constants.ConfigFileName, out cwd))
+                    return false;
+
+                // compileOnSave is set to false
+                string configPath = Path.Combine(cwd, Constants.ConfigFileName);
+                if (!IsCompileOnSaveEnabled(configPath))
                     return false;
 
                 return true;
@@ -104,6 +107,22 @@ namespace TypeScriptCompileOnSave
                 Debug.Write(ex);
                 return false;
             }
+        }
+
+        public static bool IsCompileOnSaveEnabled(string tsconfigFile)
+        {
+            if (!File.Exists(tsconfigFile))
+                return false;
+
+            string json = File.ReadAllText(tsconfigFile);
+            var obj = JObject.Parse(json);
+
+            var prop = obj["compileOnSave"];
+
+            if (prop == null)
+                return true;
+
+            return prop.Value<bool>();
         }
 
         public static bool IsFileSupported(string fileName)

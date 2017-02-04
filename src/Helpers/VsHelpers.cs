@@ -1,5 +1,9 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.Win32.SafeHandles;
+using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TypeScriptCompileOnSave
 {
@@ -29,6 +33,35 @@ namespace TypeScriptCompileOnSave
             }
 
             return false;
+        }
+
+        public static Task<bool> WaitForExitAsync(this System.Diagnostics.Process process, TimeSpan timeout)
+        {
+            ManualResetEvent processWaitObject = new ManualResetEvent(false)
+            {
+                SafeWaitHandle = new SafeWaitHandle(process.Handle, false)
+            };
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            RegisteredWaitHandle registeredProcessWaitHandle = null;
+
+            registeredProcessWaitHandle = ThreadPool.RegisterWaitForSingleObject(
+                processWaitObject,
+                (state, timedOut) =>
+                {
+                    if (!timedOut)
+                    {
+                        registeredProcessWaitHandle.Unregister(null);
+                    }
+
+                    processWaitObject.Dispose();
+                    tcs.SetResult(!timedOut);
+                },
+                null /* state */,
+                timeout,
+                true /* executeOnlyOnce */);
+
+            return tcs.Task;
         }
     }
 }
