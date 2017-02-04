@@ -4,6 +4,7 @@
 - [x] Only run transpiler when needed
 - [x] New extension icon
 - [x] Button to create *tsconfig.json*
+- [ ] Honor `"compileOnSave": false`
 - [ ] Make transpiling async
 - [ ] Updated [readme.md](README.md) with screenshots
 
