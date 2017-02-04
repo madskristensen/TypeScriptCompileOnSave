@@ -1,11 +1,14 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace TypeScriptCompileOnSave
 {
@@ -13,24 +16,40 @@ namespace TypeScriptCompileOnSave
     {
         private static bool _isProcessing;
 
-        public static async Task Transpile(string cwd)
+        public static async Task<TranspilerResult> Transpile(string cwd)
         {
-            IVsStatusbar statusBar = VsHelpers.GetService<SVsStatusbar, IVsStatusbar>();
+            if (_isProcessing)
+                return TranspilerResult.AlreadyRunning;
 
-            statusBar.SetText("Transpiling JavaScript...");
-            statusBar.FreezeOutput(1);
+            _isProcessing = true;
 
-            var result = await StartProcess(cwd);
-
-            statusBar.FreezeOutput(0);
-
-            if (result == TranspilerResult.Fail)
+            try
             {
-                statusBar.SetText("Transpilation failed");
+                string tscExe = GetTscExe();
+
+                ProcessStartInfo start = new ProcessStartInfo(tscExe)
+                {
+                    WorkingDirectory = cwd,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+
+                using (var process = System.Diagnostics.Process.Start(start))
+                {
+                    await process.WaitForExitAsync(TimeSpan.FromSeconds(Constants.CompileTimeout));
+                }
+
+                return TranspilerResult.Success;
             }
-            else
+            catch (Exception ex)
             {
-                statusBar.Clear();
+                Logger.Log(ex);
+                return TranspilerResult.Fail;
+            }
+            finally
+            {
+                _isProcessing = false;
             }
         }
 
@@ -67,7 +86,7 @@ namespace TypeScriptCompileOnSave
             }
             catch (Exception ex)
             {
-                Debug.Write(ex);
+                Logger.Log(ex);
                 return false;
             }
         }
@@ -91,49 +110,12 @@ namespace TypeScriptCompileOnSave
             string json = File.ReadAllText(tsconfigFile);
             var obj = JObject.Parse(json);
 
-            var prop = obj["compileOnSave"];
+            //var prop = obj["compileOnSave"];
 
-            if (prop == null)
-                return true;
+            //if (prop == null)
+            //    return true;
 
-            return prop.Value<bool>();
-        }
-
-        private static async Task<TranspilerResult> StartProcess(string cwd)
-        {
-            if (_isProcessing)
-                return TranspilerResult.AlreadyRunning;
-
-            _isProcessing = true;
-
-            try
-            {
-                string tscExe = GetTscExe();
-
-                ProcessStartInfo start = new ProcessStartInfo(tscExe)
-                {
-                    WorkingDirectory = cwd,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
-
-                using (var process = System.Diagnostics.Process.Start(start))
-                {
-                    await process.WaitForExitAsync(TimeSpan.FromSeconds(Constants.CompileTimeout));
-                }
-
-                return TranspilerResult.Success;
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-                return TranspilerResult.Fail;
-            }
-            finally
-            {
-                _isProcessing = false;
-            }
+            return obj["compileOnSave"].Value<bool>() && obj["compilerOptions"]["allowJs"].Value<bool>();
         }
 
         private static string GetTscExe()

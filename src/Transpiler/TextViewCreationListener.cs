@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.ComponentModel.Composition;
+using System.Windows.Threading;
 
 namespace TypeScriptCompileOnSave
 {
@@ -23,7 +24,7 @@ namespace TypeScriptCompileOnSave
             if (!DocumentService.TryGetTextDocument(view.TextBuffer, out ITextDocument document))
                 return;
 
-            var item = _dte.Solution.FindProjectItem(document.FilePath);
+            ProjectItem item = _dte.Solution.FindProjectItem(document.FilePath);
 
             if (item == null || item.ContainingProject == null)
                 return;
@@ -45,19 +46,21 @@ namespace TypeScriptCompileOnSave
             if (!document.TextBuffer.Properties.TryGetProperty("item", out ProjectItem item))
                 return;
 
-            try
-            {
-                var canCompile = item.CanTranspile(out string cwd);
 
-                if (!canCompile)
-                    return;
-
-                await Transpiler.Transpile(cwd);
-            }
-            catch (Exception ex)
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
             {
-                System.Diagnostics.Debug.Write(ex);
-            }
+                try
+                {
+                    if (!item.CanTranspile(out string cwd))
+                        return;
+
+                    await Transpiler.Transpile(cwd);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex);
+                }
+            });
         }
 
         private void TextViewClosed(object sender, EventArgs e)

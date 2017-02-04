@@ -7,6 +7,7 @@
 - [x] Honor `"compileOnSave": false`
 - [x] Make transpiling async
 - [x] Updated [readme.md](README.md) with screenshots
+- [x] Implement output window logger
 
 Features that have a checkmark are complete and available for
 download in the
