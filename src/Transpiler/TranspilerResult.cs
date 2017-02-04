@@ -1,6 +1,6 @@
 ﻿namespace TypeScriptCompileOnSave
 {
-    public enum CompilerResult
+    public enum TranspilerResult
     {
         Success,
         Fail,

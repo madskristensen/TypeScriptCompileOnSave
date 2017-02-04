@@ -1,4 +1,4 @@
-# TypeScript Compile On Save
+# JavaScript Transpiler
 
 [![Build status](https://ci.appveyor.com/api/projects/status/oo7iap01bc2tihv5?svg=true)](https://ci.appveyor.com/project/madskristensen/typescriptcompileonsave)
 
@@ -8,15 +8,15 @@ or get the [CI build](http://vsixgallery.com/extension/d6330ef4-ab82-4ab1-9828-4
 
 ---------------------------------------
 
-Automatically compiles .js and .jsx files on save when they are hooked up to the TypeScript compiler using tsconfig.json
+The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.
 
 See the [change log](CHANGELOG.md) for changes and road map.
 
 ## Features
 
-- Compile on save
+- Transpile on save
 
-### Compile on save
+### Transpile on save
 coming soon...
 
 ## Contribute

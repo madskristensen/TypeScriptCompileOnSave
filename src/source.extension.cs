@@ -8,11 +8,11 @@ namespace TypeScriptCompileOnSave
     static class Vsix
     {
         public const string Id = "d6330ef4-ab82-4ab1-9828-4e43639e7521";
-        public const string Name = "TypeScript Compile On Save";
-        public const string Description = @"Automatically compiles .js and .jsx files on save when they are hooked up to the TypeScript compiler using tsconfig.json";
+        public const string Name = "JavaScript Transpiler";
+        public const string Description = @"The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.";
         public const string Language = "en-US";
         public const string Version = "0.1";
         public const string Author = "Mads Kristensen";
-        public const string Tags = "typescript, javascript, jsx, tsx, compile";
+        public const string Tags = "typescript, javascript, jsx, tsx, transpile";
     }
 }
