@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/oo7iap01bc2tihv5?svg=true)](https://ci.appveyor.com/project/madskristensen/typescriptcompileonsave)
 
-Download this extension from the [Marketplace](https://marketplace.visualstudio.com/vsgallery/797b61e6-b56a-493d-be5a-f9435a63ba87)
+Download this extension from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.JavaScriptTranspiler)
 or get the [CI build](http://vsixgallery.com/extension/d6330ef4-ab82-4ab1-9828-4e43639e7521/).
 
 ---------------------------------------
