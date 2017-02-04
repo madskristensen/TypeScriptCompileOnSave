@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  <Include href="KnownImageIds.vsct" />
+
+  <Commands package="guidCompilePackage">
+    <Groups>
+      <Group guid="guidCompilePackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidCompilePackageCmdSet" id="AddConfigFileId" priority="0x0100" type="Button">
+        <Parent guid="guidCompilePackageCmdSet" id="MyMenuGroup" />
+        <!--<Icon guid="ImageCatalogGuid" id="TriggerScript" />
+        <CommandFlag>IconIsMoniker</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Transpile to JavaScript</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <!--<VisibilityConstraints>
+    <VisibilityItem guid="guidCompilePackageCmdSet" id="AddConfigFileId" context="guidAutoLoad">
+    </VisibilityItem>
+  </VisibilityConstraints>-->
+
+  <Symbols>
+    <GuidSymbol name="guidCompilePackage" value="{92479255-4cce-4754-9caa-a0c47a10e055}" />
+    <GuidSymbol name="guidAutoLoad" value="{92479255-4cde-4751-9cba-a0c47a10e056}" />
+
+    <GuidSymbol name="guidCompilePackageCmdSet" value="{e062e925-6e86-483e-95e7-fddfca31f177}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="AddConfigFileId" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

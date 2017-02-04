@@ -3,6 +3,7 @@
 - [x] Write to the status bar when transpiling
 - [x] Only run transpiler when needed
 - [x] New logo
+- [x] Button to create *tsconfig.json*
 
 Features that have a checkmark are complete and available for
 download in the

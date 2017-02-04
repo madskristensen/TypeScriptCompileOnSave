@@ -86,16 +86,15 @@ namespace TypeScriptCompileOnSave
             try
             {
                 // Not the right file extension
-                string ext = Path.GetExtension(fileName);
-                if (!Constants.FileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
+                if (!IsFileSupported(fileName))
                     return false;
 
                 // File not in the right project type
-                if (!Constants.ProjectGuids.Contains(item?.ContainingProject?.Kind, StringComparer.OrdinalIgnoreCase))
+                if (!IsProjectSupported(item.ContainingProject))
                     return false;
 
                 // tsconfig.json doesn't exist
-                if (!HasConfig(fileName, out cwd))
+                if (!VsHelpers.FileExistInOrAbove(fileName, "tsconfig.json", out cwd))
                     return false;
 
                 return true;
@@ -107,25 +106,15 @@ namespace TypeScriptCompileOnSave
             }
         }
 
-        private static bool HasConfig(string sourceFile, out string directory)
+        public static bool IsFileSupported(string fileName)
         {
-            directory = null;
-            var currentDir = new DirectoryInfo(Path.GetDirectoryName(sourceFile));
+            string ext = Path.GetExtension(fileName);
+            return Constants.FileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+        }
 
-            while (currentDir != null)
-            {
-                string config = Path.Combine(currentDir.FullName, "tsconfig.json");
-
-                if (File.Exists(config))
-                {
-                    directory = currentDir.FullName;
-                    return true;
-                }
-
-                currentDir = currentDir.Parent;
-            }
-
-            return false;
+        public static bool IsProjectSupported(Project project)
+        {
+            return Constants.ProjectGuids.Contains(project?.Kind, StringComparer.OrdinalIgnoreCase);
         }
 
         private static string GetTscExe()
