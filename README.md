@@ -2,8 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/oo7iap01bc2tihv5?svg=true)](https://ci.appveyor.com/project/madskristensen/typescriptcompileonsave)
 
-<!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [Marketplace](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
+Download this extension from the [Marketplace](https://marketplace.visualstudio.com/vsgallery/797b61e6-b56a-493d-be5a-f9435a63ba87)
 or get the [CI build](http://vsixgallery.com/extension/d6330ef4-ab82-4ab1-9828-4e43639e7521/).
 
 ---------------------------------------
@@ -12,11 +11,12 @@ The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated
 
 See the [change log](CHANGELOG.md) for changes and road map.
 
-## Features
+## Content
 
 - Enable transpilation
 - Options
 - Transpile on save
+- Troubleshoot
 
 ### Enable transpilation
 In order for the automatic transpiling to happen, a `tsconfig.json` file must be located in the same directory as the script file or in any parent directory above it.
@@ -41,7 +41,11 @@ You can set options under the `"compilerOptions"` element. Just remember to set 
 When the `tsconfig.json` file is set up correctly, then transpilation happens automatically every time you save one of the source `.js` or `.jsx` files.
 
 ### Troubleshooting
-If the compilation doesn't work, the first thing to try is to build the ASP.NET Core project. If the output `.js` file is not being generated then it is becuase the `tsconfig.json` isn't setup correctly. Make sure both `"compileOnSave"` `"compilerOptions/allowJs"` is set to `true`.
+If the compilation doesn't work, the first thing to try is to build the ASP.NET Core project. That triggers the built-in TypeScript compiler. 
+
+If the output `.js` file is not being generated then it is becuase the `tsconfig.json` isn't set up correctly. Make sure both `"compileOnSave"` `"compilerOptions/allowJs"` is set to `true` and that `"include"` or `"files"` point to the source file.
+
+If it works on project build, then it should work when saving source files too.
 
 ## Contribute
 Check out the [contribution guidelines](.github/CONTRIBUTING.md)
