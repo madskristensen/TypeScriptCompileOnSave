@@ -14,11 +14,10 @@ namespace TypeScriptCompileOnSave
     [ProvideAutoLoad(PackageGuids.guidAutoLoadString)]
     [ProvideUIContextRule(PackageGuids.guidAutoLoadString,
         name: "Auto load",
-        expression: "aspnet & typescript & (js | jsx)",
-        termNames: new[] { "aspnet", "typescript", "js", "jsx" },
+        expression: "aspnet & (js | jsx)",
+        termNames: new[] { "aspnet", "js", "jsx" },
         termValues: new[] {
             "ActiveProjectCapability:DotNetCoreWeb",
-            "ActiveProjectCapability:TypeScript",
             "HierSingleSelectionName:.js$",
             "HierSingleSelectionName:.jsx$"
     })]

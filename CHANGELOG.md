@@ -1,5 +1,6 @@
 # Road map
 
+- [x] Removed check for TypeScript capability on CPS
 - [ ] Minification of the generated .js
 
 Features that have a checkmark are complete and available for
