@@ -49,6 +49,8 @@ If the output `.js` file is not being generated then it is becuase the `tsconfig
 
 If it works on project build, then it should work when saving source files too.
 
+Exceptions from this extensions is shown in the output window, so make sure to check it for any clues.
+
 ## Contribute
 Check out the [contribution guidelines](.github/CONTRIBUTING.md)
 if you want to contribute to this project.

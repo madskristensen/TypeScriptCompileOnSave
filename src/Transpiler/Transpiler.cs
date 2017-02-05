@@ -1,6 +1,4 @@
 ﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace TypeScriptCompileOnSave
 {
@@ -16,10 +13,12 @@ namespace TypeScriptCompileOnSave
     {
         private static bool _isProcessing;
 
-        public static async Task<TranspilerResult> Transpile(string cwd)
+        public static async Task<TranspilerStatus> Transpile(this ProjectItem item)
         {
-            if (_isProcessing)
-                return TranspilerResult.AlreadyRunning;
+            var status = CanTranspile(item, out string cwd);
+
+            if (status != TranspilerStatus.Ok)
+                return status;
 
             _isProcessing = true;
 
@@ -40,12 +39,12 @@ namespace TypeScriptCompileOnSave
                     await process.WaitForExitAsync(TimeSpan.FromSeconds(Constants.CompileTimeout));
                 }
 
-                return TranspilerResult.Success;
+                return TranspilerStatus.Ok;
             }
             catch (Exception ex)
             {
                 Logger.Log(ex);
-                return TranspilerResult.Fail;
+                return TranspilerStatus.Exception;
             }
             finally
             {
@@ -53,13 +52,13 @@ namespace TypeScriptCompileOnSave
             }
         }
 
-        public static bool CanTranspile(this ProjectItem item, out string cwd)
+        public static TranspilerStatus CanTranspile(this ProjectItem item, out string cwd)
         {
             cwd = null;
 
             // Already running
             if (_isProcessing)
-                return false;
+                return TranspilerStatus.AlreadyRunning;
 
             string fileName = item.FileNames[1];
 
@@ -67,27 +66,31 @@ namespace TypeScriptCompileOnSave
             {
                 // Not the right file extension
                 if (!IsFileSupported(fileName))
-                    return false;
+                    return TranspilerStatus.NotSupported;
 
                 // File not in the right project type
                 if (!IsProjectSupported(item.ContainingProject))
-                    return false;
+                    return TranspilerStatus.NotSupported;
 
                 // tsconfig.json doesn't exist
                 if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out cwd))
-                    return false;
+                    return TranspilerStatus.NotSupported;
 
                 // compileOnSave is set to false
                 string configPath = Path.Combine(cwd, Constants.ConfigFileName);
                 if (!IsCompileOnSaveEnabled(configPath))
-                    return false;
+                    return TranspilerStatus.NotSupported;
 
-                return true;
+                return TranspilerStatus.Ok;
+            }
+            catch (JsonException)
+            {
+                return TranspilerStatus.ConfigError;
             }
             catch (Exception ex)
             {
                 Logger.Log(ex);
-                return false;
+                return TranspilerStatus.Exception;
             }
         }
 

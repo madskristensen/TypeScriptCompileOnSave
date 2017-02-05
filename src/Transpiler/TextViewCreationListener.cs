@@ -47,18 +47,16 @@ namespace TypeScriptCompileOnSave
                 return;
 
 
-            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+            TranspilerStatus status = await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
             {
                 try
                 {
-                    if (!item.CanTranspile(out string cwd))
-                        return;
-
-                    await Transpiler.Transpile(cwd);
+                    return await item.Transpile();
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(ex);
+                    return TranspilerStatus.Exception;
                 }
             });
         }

@@ -39,12 +39,12 @@ namespace TypeScriptCompileOnSave
         // From http://stackoverflow.com/a/17936541/1074470
         public static Task<bool> WaitForExitAsync(this System.Diagnostics.Process process, TimeSpan timeout)
         {
-            ManualResetEvent processWaitObject = new ManualResetEvent(false)
+            var processWaitObject = new ManualResetEvent(false)
             {
                 SafeWaitHandle = new SafeWaitHandle(process.Handle, false)
             };
 
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            var tcs = new TaskCompletionSource<bool>();
             RegisteredWaitHandle registeredProcessWaitHandle = null;
 
             registeredProcessWaitHandle = ThreadPool.RegisterWaitForSingleObject(

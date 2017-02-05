@@ -74,14 +74,21 @@ namespace TypeScriptCompileOnSave
             if (_item == null || _item.ContainingProject == null)
                 return;
 
-            string projectRoot = _item.ContainingProject.Properties.Item("FullPath").Value.ToString();
-
-            if (Directory.Exists(projectRoot))
+            try
             {
-                string configPath = await CreateConfigFile(projectRoot);
+                string projectRoot = _item.ContainingProject.Properties.Item("FullPath").Value.ToString();
 
-                VsHelpers.OpenFileAndSelect(_item.DTE, configPath);
-                await Transpiler.Transpile(projectRoot);
+                if (Directory.Exists(projectRoot))
+                {
+                    string configPath = await CreateConfigFile(projectRoot);
+
+                    VsHelpers.OpenFileAndSelect(_item.DTE, configPath);
+                    TranspilerStatus status = await _item.Transpile();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex);
             }
         }
 
