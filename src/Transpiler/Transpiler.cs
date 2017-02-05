@@ -52,7 +52,7 @@ namespace TypeScriptCompileOnSave
             }
         }
 
-        public static TranspilerStatus CanTranspile(this ProjectItem item)
+        private static TranspilerStatus CanTranspile(this ProjectItem item)
         {
             // Already running
             if (_isProcessing)

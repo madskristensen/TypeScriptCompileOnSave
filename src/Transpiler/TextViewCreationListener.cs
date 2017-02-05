@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.ComponentModel.Composition;
-using System.Windows.Threading;
 
 namespace TypeScriptCompileOnSave
 {
