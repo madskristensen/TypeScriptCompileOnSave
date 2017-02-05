@@ -15,7 +15,7 @@ namespace TypeScriptCompileOnSave
 
         public static async Task<TranspilerStatus> Transpile(this ProjectItem item)
         {
-            var status = CanTranspile(item, out string cwd);
+            var status = CanTranspile(item);
 
             if (status != TranspilerStatus.Ok)
                 return status;
@@ -28,7 +28,7 @@ namespace TypeScriptCompileOnSave
 
                 ProcessStartInfo start = new ProcessStartInfo(tscExe)
                 {
-                    WorkingDirectory = cwd,
+                    WorkingDirectory = Path.GetDirectoryName(item.FileNames[1]),
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Hidden
@@ -52,10 +52,8 @@ namespace TypeScriptCompileOnSave
             }
         }
 
-        public static TranspilerStatus CanTranspile(this ProjectItem item, out string cwd)
+        public static TranspilerStatus CanTranspile(this ProjectItem item)
         {
-            cwd = null;
-
             // Already running
             if (_isProcessing)
                 return TranspilerStatus.AlreadyRunning;
@@ -73,7 +71,7 @@ namespace TypeScriptCompileOnSave
                     return TranspilerStatus.NotSupported;
 
                 // tsconfig.json doesn't exist
-                if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out cwd))
+                if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out string cwd))
                     return TranspilerStatus.NotSupported;
 
                 // compileOnSave is set to false
@@ -112,11 +110,6 @@ namespace TypeScriptCompileOnSave
 
             string json = File.ReadAllText(tsconfigFile);
             var obj = JObject.Parse(json);
-
-            //var prop = obj["compileOnSave"];
-
-            //if (prop == null)
-            //    return true;
 
             return obj["compileOnSave"].Value<bool>() && obj["compilerOptions"]["allowJs"].Value<bool>();
         }

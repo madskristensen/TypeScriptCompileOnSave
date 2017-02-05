@@ -94,11 +94,9 @@ namespace TypeScriptCompileOnSave
 
         private async Task<string> CreateConfigFile(string projectRoot)
         {
-            string sourceDir = Path.GetDirectoryName(_item.FileNames[1]);
-            string sourceExt = Path.GetExtension(_item.FileNames[1]);
-            string glob = sourceDir.Substring(projectRoot.Length + 1).Replace("\\", "/") + $"/**/*{sourceExt}";
+            string file = _item.FileNames[1].Substring(projectRoot.Length + 1).Replace("\\", "/");
             string configPath = Path.Combine(projectRoot, Constants.ConfigFileName);
-            string content = string.Format(Constants.DefaultTsConfig, glob);
+            string content = string.Format(Constants.DefaultTsConfig, file);
 
             using (var fs = new FileStream(configPath, FileMode.Create))
             {

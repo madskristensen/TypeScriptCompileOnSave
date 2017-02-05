@@ -21,13 +21,15 @@ namespace TypeScriptCompileOnSave
 
         public const string DefaultTsConfig = @"{{
   ""compileOnSave"": true,
-  ""include"": [ ""{0}"" ],
   ""compilerOptions"": {{
     ""allowJs"": true,
     ""sourceMap"": true,
     ""jsx"": ""react"",
     ""outFile"": ""wwwroot/js/bundle.js""
-  }}
+  }},
+  ""files"": [
+    ""{0}""
+  ]
 }}";
     }
 }
