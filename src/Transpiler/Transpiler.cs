@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using shell = Microsoft.VisualStudio.Shell.VsShellUtilities;
+using Microsoft.VisualStudio.Shell;
 
 namespace TypeScriptCompileOnSave
 {
@@ -15,7 +17,7 @@ namespace TypeScriptCompileOnSave
 
         public static async Task<TranspilerStatus> Transpile(this ProjectItem item)
         {
-            var status = CanTranspile(item);
+            TranspilerStatus status = CanTranspile(item);
 
             if (status != TranspilerStatus.Ok)
                 return status;
@@ -26,7 +28,7 @@ namespace TypeScriptCompileOnSave
             {
                 string tscExe = GetTscExe();
 
-                ProcessStartInfo start = new ProcessStartInfo(tscExe)
+                var start = new ProcessStartInfo(tscExe)
                 {
                     WorkingDirectory = Path.GetDirectoryName(item.FileNames[1]),
                     CreateNoWindow = true,
@@ -70,6 +72,10 @@ namespace TypeScriptCompileOnSave
                 if (!IsProjectSupported(item.ContainingProject))
                     return TranspilerStatus.NotSupported;
 
+                // Don't run while building
+                if (IsBuildingOrDebugging(item.DTE))
+                    return TranspilerStatus.NotSupported;
+
                 // tsconfig.json doesn't exist
                 if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out string cwd))
                     return TranspilerStatus.NotSupported;
@@ -103,6 +109,12 @@ namespace TypeScriptCompileOnSave
             return Constants.ProjectGuids.Contains(project?.Kind, StringComparer.OrdinalIgnoreCase);
         }
 
+        public static bool IsBuildingOrDebugging(_DTE dte)
+        {
+            var serviceProvider = new ServiceProvider(dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+            return shell.IsSolutionBuilding(serviceProvider) || dte.Debugger.CurrentMode != dbgDebugMode.dbgDesignMode;
+        }
+
         private static bool IsCompileOnSaveEnabled(string tsconfigFile)
         {
             if (!File.Exists(tsconfigFile))
@@ -119,7 +131,7 @@ namespace TypeScriptCompileOnSave
             if (!Directory.Exists(Constants.TscLocation))
                 return null;
 
-            var latest = Directory.GetDirectories(Constants.TscLocation).LastOrDefault();
+            string latest = Directory.GetDirectories(Constants.TscLocation).LastOrDefault();
 
             if (string.IsNullOrEmpty(latest))
                 return null;

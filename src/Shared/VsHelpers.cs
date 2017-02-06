@@ -10,9 +10,14 @@ namespace TypeScriptCompileOnSave
 {
     public static class VsHelpers
     {
-        public static TReturnType GetService<TServiceType, TReturnType>()
+        public static TInterface GetService<TService, TInterface>() where TService : class where TInterface : class
         {
-            return (TReturnType)ServiceProvider.GlobalProvider.GetService(typeof(TServiceType));
+            return (TInterface)ServiceProvider.GlobalProvider.GetService(typeof(TService));
+        }
+
+        public static Task<TInterface> GetServiceAsync<TService, TInterface>() where TService : class where TInterface : class
+        {
+            return ServiceProvider.GetGlobalServiceAsync<TService, TInterface>();
         }
 
         public static bool FileExistAtOrAbove(string sourceFile, string fileNameToLookFor, out string directory)

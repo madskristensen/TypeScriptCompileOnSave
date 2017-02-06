@@ -43,6 +43,7 @@ namespace TypeScriptCompileOnSave
         {
             var button = (OleMenuCommand)sender;
             button.Visible = button.Enabled = false;
+            button.Text = "Transpile to JavaScript";
 
             DTE2 dte = VsHelpers.GetService<DTE, DTE2>();
             _item = dte.SelectedItems.Item(1).ProjectItem;
@@ -57,6 +58,9 @@ namespace TypeScriptCompileOnSave
 
             button.Visible = true;
 
+            if (Transpiler.IsBuildingOrDebugging(dte))
+                return;
+
             if (VsHelpers.FileExistAtOrAbove(fileName, "tsconfig.json", out string cwd))
             {
                 button.Text = "Transpile to JavaScript (tsconfig.json found)";
@@ -64,7 +68,6 @@ namespace TypeScriptCompileOnSave
             }
             else
             {
-                button.Text = "Transpile to JavaScript";
                 button.Enabled = true;
             }
         }
