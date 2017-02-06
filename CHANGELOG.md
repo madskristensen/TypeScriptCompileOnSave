@@ -1,7 +1,5 @@
 # Road map
 
-- [x] Removed check for TypeScript capability on CPS
-- [x] Disable command when solution is building or debugging
 - [ ] Move strings to resource file
 - [ ] Minification of the generated .js
 
@@ -13,6 +11,15 @@ download in the
 
 These are the changes to each version that has been released
 on the official Visual Studio extension gallery.
+
+## 0.7
+
+- [x] Removed check for TypeScript capability on CPS
+- [x] Disable command when solution is building or debugging
+
+## 0.6
+
+- [x] Bug fixes
 
 ## 0.5
 

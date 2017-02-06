@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="d6330ef4-ab82-4ab1-9828-4e43639e7521" Version="0.6" Language="en-US" Publisher="Mads Kristensen" />
+    <Identity Id="d6330ef4-ab82-4ab1-9828-4e43639e7521" Version="0.7" Language="en-US" Publisher="Mads Kristensen" />
     <DisplayName>JavaScript Transpiler</DisplayName>
     <Description xml:space="preserve">The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.</Description>
     <MoreInfo>https://github.com/madskristensen/TypeScriptCompileOnSave</MoreInfo>
