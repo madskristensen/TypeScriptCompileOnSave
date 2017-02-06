@@ -61,9 +61,9 @@ namespace TypeScriptCompileOnSave
             if (Transpiler.IsBuildingOrDebugging(dte))
                 return;
 
-            if (VsHelpers.FileExistAtOrAbove(fileName, "tsconfig.json", out string cwd))
+            if (VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out string cwd))
             {
-                button.Text = "Transpile to JavaScript (tsconfig.json found)";
+                button.Text = $"Transpile to JavaScript ({Constants.ConfigFileName} found)";
                 button.Enabled = false;
             }
             else
