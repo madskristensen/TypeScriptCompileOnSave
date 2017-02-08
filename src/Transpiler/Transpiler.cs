@@ -16,7 +16,7 @@ namespace TypeScriptCompileOnSave
     public static class Transpiler
     {
         private static bool _isProcessing;
-        private static Dictionary<Project, MSbuildProject> _buildProjects = new Dictionary<Project, MSbuildProject>();
+        private static Dictionary<string, MSbuildProject> _buildProjects = new Dictionary<string, MSbuildProject>();
 
         public static async Task<TranspilerStatus> Transpile(this ProjectItem item)
         {
@@ -29,33 +29,38 @@ namespace TypeScriptCompileOnSave
 
             try
             {
-                Project project = item.ContainingProject;
-                bool success = false;
-
-                await System.Threading.Tasks.Task.Run(() =>
-                {
-                    if (!_buildProjects.ContainsKey(project))
-                    {
-                        var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);
-                        var proj = new MSbuildProject(root);
-                        proj.SetGlobalProperty("BuildingProject", "true");
-                        _buildProjects[project] = proj;
-                    }
-
-                    success = _buildProjects[project].Build(new[] { "FindConfigFiles", "CompileTypeScriptWithTsConfig" });
-                });
-
-                return success ? TranspilerStatus.Ok : TranspilerStatus.ConfigError;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-                return TranspilerStatus.Exception;
+                return await BuildProject(item.ContainingProject);
             }
             finally
             {
                 _isProcessing = false;
             }
+        }
+
+        private static async Task<TranspilerStatus> BuildProject(Project project)
+        {
+            return await System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    if (!_buildProjects.ContainsKey(project.UniqueName))
+                    {
+                        var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);
+                        var proj = new MSbuildProject(root);
+                        proj.SetGlobalProperty("BuildingProject", "true");
+                        _buildProjects[project.UniqueName] = proj;
+                    }
+
+                    bool success = _buildProjects[project.UniqueName].Build(new[] { "FindConfigFiles", "CompileTypeScriptWithTsConfig" });
+
+                    return success ? TranspilerStatus.Ok : TranspilerStatus.BuildFailed;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex);
+                    return TranspilerStatus.Exception;
+                }
+            });
         }
 
         private static TranspilerStatus CanTranspile(this ProjectItem item)
