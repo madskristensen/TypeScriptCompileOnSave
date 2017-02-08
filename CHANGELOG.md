@@ -1,6 +1,7 @@
 # Road map
 
 - [x] Check if file is a source file before transpiling
+- [x] Use MSBuild instead of calling tsc.exe directly
 - [ ] Move strings to resource file
 - [ ] Minification of the generated .js
 

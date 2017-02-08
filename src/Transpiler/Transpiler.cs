@@ -1,21 +1,22 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Minimatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MSbuildProject = Microsoft.Build.Evaluation.Project;
 using shell = Microsoft.VisualStudio.Shell.VsShellUtilities;
-using Microsoft.VisualStudio.Shell;
-using System.Collections.Generic;
-using Minimatch;
 
 namespace TypeScriptCompileOnSave
 {
     public static class Transpiler
     {
         private static bool _isProcessing;
+        private static Dictionary<Project, MSbuildProject> _buildProjects = new Dictionary<Project, MSbuildProject>();
 
         public static async Task<TranspilerStatus> Transpile(this ProjectItem item)
         {
@@ -28,22 +29,23 @@ namespace TypeScriptCompileOnSave
 
             try
             {
-                string tscExe = GetTscExe();
+                Project project = item.ContainingProject;
+                bool success = false;
 
-                var start = new ProcessStartInfo(tscExe)
+                await System.Threading.Tasks.Task.Run(() =>
                 {
-                    WorkingDirectory = Path.GetDirectoryName(item.FileNames[1]),
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
+                    if (!_buildProjects.ContainsKey(project))
+                    {
+                        var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);
+                        var proj = new MSbuildProject(root);
+                        proj.SetGlobalProperty("BuildingProject", "true");
+                        _buildProjects[project] = proj;
+                    }
 
-                using (var process = System.Diagnostics.Process.Start(start))
-                {
-                    await process.WaitForExitAsync(TimeSpan.FromSeconds(Constants.CompileTimeout));
-                }
+                    success = _buildProjects[project].Build(new[] { "FindConfigFiles", "CompileTypeScriptWithTsConfig" });
+                });
 
-                return TranspilerStatus.Ok;
+                return success ? TranspilerStatus.Ok : TranspilerStatus.ConfigError;
             }
             catch (Exception ex)
             {
@@ -167,19 +169,6 @@ namespace TypeScriptCompileOnSave
             }
 
             return false;
-        }
-
-        private static string GetTscExe()
-        {
-            if (!Directory.Exists(Constants.TscLocation))
-                return null;
-
-            string latest = Directory.GetDirectories(Constants.TscLocation).LastOrDefault();
-
-            if (string.IsNullOrEmpty(latest))
-                return null;
-
-            return Path.Combine(latest, "tsc.exe");
         }
     }
 }
