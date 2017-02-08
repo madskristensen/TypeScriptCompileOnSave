@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using shell = Microsoft.VisualStudio.Shell.VsShellUtilities;
 using Microsoft.VisualStudio.Shell;
+using System.Collections.Generic;
+using Minimatch;
 
 namespace TypeScriptCompileOnSave
 {
@@ -80,9 +82,16 @@ namespace TypeScriptCompileOnSave
                 if (!VsHelpers.FileExistAtOrAbove(fileName, Constants.ConfigFileName, out string cwd))
                     return TranspilerStatus.NotSupported;
 
+                // tsconfig.json is invalid
+                if (!TryGetJsonConfig(cwd, out JObject obj))
+                    return TranspilerStatus.ConfigError;
+
                 // compileOnSave is set to false
-                string configPath = Path.Combine(cwd, Constants.ConfigFileName);
-                if (!IsCompileOnSaveEnabled(configPath))
+                if (!IsCompileOnSaveEnabled(obj))
+                    return TranspilerStatus.NotSupported;
+
+                // Current file not a source file
+                if (!IsSourceFile(obj, cwd, fileName))
                     return TranspilerStatus.NotSupported;
 
                 return TranspilerStatus.Ok;
@@ -95,6 +104,23 @@ namespace TypeScriptCompileOnSave
             {
                 Logger.Log(ex);
                 return TranspilerStatus.Exception;
+            }
+        }
+
+        private static bool TryGetJsonConfig(string cwd, out JObject obj)
+        {
+            obj = null;
+            try
+            {
+                string configPath = Path.Combine(cwd, Constants.ConfigFileName);
+                string json = File.ReadAllText(configPath);
+                obj = JObject.Parse(json);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
@@ -115,15 +141,32 @@ namespace TypeScriptCompileOnSave
             return shell.IsSolutionBuilding(serviceProvider) || dte.Debugger.CurrentMode != dbgDebugMode.dbgDesignMode;
         }
 
-        private static bool IsCompileOnSaveEnabled(string tsconfigFile)
+        private static bool IsCompileOnSaveEnabled(JObject tsconfig)
         {
-            if (!File.Exists(tsconfigFile))
-                return false;
+            return tsconfig["compileOnSave"].Value<bool>() && tsconfig["compilerOptions"]["allowJs"].Value<bool>();
+        }
 
-            string json = File.ReadAllText(tsconfigFile);
-            var obj = JObject.Parse(json);
+        private static bool IsSourceFile(JObject obj, string cwd, string fileName)
+        {
+            IEnumerable<string> files = obj["files"]?.Values<string>() ?? Enumerable.Empty<string>();
+            IEnumerable<string> includes = obj["include"]?.Values<string>() ?? Enumerable.Empty<string>();
 
-            return obj["compileOnSave"].Value<bool>() && obj["compilerOptions"]["allowJs"].Value<bool>();
+            var options = new Options { AllowWindowsPaths = true };
+            string relative = fileName.Substring(cwd.Length).Trim('\\');
+
+            foreach (string file in files)
+            {
+                bool isMatch = Minimatcher.Check(relative, file, options);
+                if (isMatch) return true;
+            }
+
+            foreach (string pattern in includes)
+            {
+                bool isMatch = Minimatcher.Check(relative, pattern, options);
+                if (isMatch) return true;
+            }
+
+            return false;
         }
 
         private static string GetTscExe()

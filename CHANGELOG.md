@@ -1,6 +1,6 @@
 # Road map
 
-- [ ] Check if file is a source file before transpiling
+- [x] Check if file is a source file before transpiling
 - [ ] Move strings to resource file
 - [ ] Minification of the generated .js
 
