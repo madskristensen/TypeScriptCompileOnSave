@@ -15,11 +15,6 @@ namespace TypeScriptCompileOnSave
             return (TInterface)ServiceProvider.GlobalProvider.GetService(typeof(TService));
         }
 
-        public static Task<TInterface> GetServiceAsync<TService, TInterface>() where TService : class where TInterface : class
-        {
-            return ServiceProvider.GetGlobalServiceAsync<TService, TInterface>();
-        }
-
         public static bool FileExistAtOrAbove(string sourceFile, string fileNameToLookFor, out string directory)
         {
             directory = null;

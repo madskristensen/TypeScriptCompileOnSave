@@ -11,7 +11,7 @@ namespace TypeScriptCompileOnSave
         public const string Name = "JavaScript Transpiler";
         public const string Description = @"The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.";
         public const string Language = "en-US";
-        public const string Version = "0.7";
+        public const string Version = "0.8";
         public const string Author = "Mads Kristensen";
         public const string Tags = "typescript, javascript, jsx, tsx, transpile";
     }

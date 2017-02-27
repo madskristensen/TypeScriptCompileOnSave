@@ -16,7 +16,8 @@ namespace TypeScriptCompileOnSave
 
         public static string[] ProjectGuids =
         {
-            "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}" // ASP.NET Core
+            "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}", // ASP.NET Core
+            "{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}", // Project K
         };
 
         public const string DefaultTsConfig = @"{{

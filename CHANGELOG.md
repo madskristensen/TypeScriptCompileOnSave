@@ -1,7 +1,5 @@
 # Road map
 
-- [x] Check if file is a source file before transpiling
-- [x] Use MSBuild instead of calling tsc.exe directly
 - [ ] Move strings to resource file
 - [ ] Minification of the generated .js
 
@@ -13,6 +11,12 @@ download in the
 
 These are the changes to each version that has been released
 on the official Visual Studio extension gallery.
+
+## 0.8
+
+- [x] Support for .NET Core web apps in VS 2015
+- [x] Check if file is a source file before transpiling
+- [x] Use MSBuild instead of calling tsc.exe directly
 
 ## 0.7
 
