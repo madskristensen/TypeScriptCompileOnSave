@@ -12,6 +12,10 @@ download in the
 These are the changes to each version that has been released
 on the official Visual Studio extension gallery.
 
+## 0.9
+
+- [x] Let VS 2017.3 do the compile on save
+
 ## 0.8
 
 - [x] Support for .NET Core web apps in VS 2015

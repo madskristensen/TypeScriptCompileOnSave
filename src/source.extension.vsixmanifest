@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
-        <Identity Id="d6330ef4-ab82-4ab1-9828-4e43639e7521" Version="0.8" Language="en-US" Publisher="Mads Kristensen" />
-        <DisplayName>JavaScript Transpiler</DisplayName>
-        <Description xml:space="preserve">The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.</Description>
-        <MoreInfo>https://github.com/madskristensen/TypeScriptCompileOnSave</MoreInfo>
-        <License>Resources\LICENSE</License>
-        <ReleaseNotes>https://github.com/madskristensen/TypeScriptCompileOnSave/blob/master/CHANGELOG.md</ReleaseNotes>
-        <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\Icon.png</PreviewImage>
-        <Tags>typescript, javascript, jsx, tsx, transpile</Tags>
-    </Metadata>
-    <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="14.0" />
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="15.0" />
-    </Installation>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[15.0,16.0)" DisplayName="ASP.NET and web development tools" />
-    </Prerequisites>
-    <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    </Assets>
+  <Metadata>
+    <Identity Id="d6330ef4-ab82-4ab1-9828-4e43639e7521" Version="0.9" Language="en-US" Publisher="Mads Kristensen" />
+    <DisplayName>JavaScript Transpiler</DisplayName>
+    <Description xml:space="preserve">The simplest way to transpile JS and JSX to EcmaScript 5 without any complicated node.js tools in your project. It uses the TypeScript compiler behind the scenes.</Description>
+    <MoreInfo>https://github.com/madskristensen/TypeScriptCompileOnSave</MoreInfo>
+    <License>Resources\LICENSE</License>
+    <ReleaseNotes>https://github.com/madskristensen/TypeScriptCompileOnSave/blob/master/CHANGELOG.md</ReleaseNotes>
+    <Icon>Resources\Icon.png</Icon>
+    <PreviewImage>Resources\Icon.png</PreviewImage>
+    <Tags>typescript, javascript, jsx, tsx, transpile</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="14.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="15.0" />
+  </Installation>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[15.0,16.0)" DisplayName="ASP.NET and web development tools" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+  </Assets>
 </PackageManifest>

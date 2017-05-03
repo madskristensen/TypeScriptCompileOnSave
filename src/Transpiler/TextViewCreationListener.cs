@@ -17,9 +17,13 @@ namespace TypeScriptCompileOnSave
         private ITextDocumentFactoryService DocumentService { get; set; }
 
         private static DTE2 _dte = VsHelpers.GetService<DTE, DTE2>();
+        private static bool _isMaxVersion = VsHelpers.GetVisualStudioVersion() >= new Version(15, 0, 26427);
 
         public void TextViewCreated(IWpfTextView view)
         {
+            if (_isMaxVersion)
+                return;
+
             if (!DocumentService.TryGetTextDocument(view.TextBuffer, out ITextDocument document))
                 return;
 

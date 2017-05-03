@@ -15,6 +15,14 @@ namespace TypeScriptCompileOnSave
             return (TInterface)ServiceProvider.GlobalProvider.GetService(typeof(TService));
         }
 
+        public static Version GetVisualStudioVersion()
+        {
+            var process = System.Diagnostics.Process.GetCurrentProcess();
+            System.Diagnostics.FileVersionInfo v = process.MainModule.FileVersionInfo;
+
+            return new Version(v.ProductMajorPart, v.ProductMinorPart, v.ProductBuildPart);
+        }
+
         public static bool FileExistAtOrAbove(string sourceFile, string fileNameToLookFor, out string directory)
         {
             directory = null;
