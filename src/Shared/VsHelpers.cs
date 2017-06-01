@@ -77,7 +77,13 @@ namespace TypeScriptCompileOnSave
         public static void OpenFileAndSelect(this DTE dte, string file)
         {
             dte.ItemOperations.OpenFile(file);
-            dte.ExecuteCommand("SolutionExplorer.SyncWithActiveDocument");
+
+            Command cmd = dte.Commands.Item("SolutionExplorer.SyncWithActiveDocument");
+
+            if (cmd != null && cmd.IsAvailable)
+            {
+                dte.Commands.Raise(cmd.Guid, cmd.ID, null, null);
+            }
         }
     }
 }
