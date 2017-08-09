@@ -32,9 +32,12 @@ namespace TypeScriptCompileOnSave
             if (item == null || item.ContainingProject == null)
                 return;
 
-            document.TextBuffer.Properties.AddProperty("item", item);
+            if (!document.TextBuffer.Properties.ContainsProperty("p_item"))
+                document.TextBuffer.Properties.AddProperty("p_item", item);
 
-            view.Properties.AddProperty("doc", document);
+            if (!view.Properties.ContainsProperty("doc"))
+                view.Properties.AddProperty("doc", document);
+
             view.Closed += TextViewClosed;
             document.FileActionOccurred += DocumentSaved;
         }
@@ -46,7 +49,7 @@ namespace TypeScriptCompileOnSave
 
             var document = (ITextDocument)sender;
 
-            if (!document.TextBuffer.Properties.TryGetProperty("item", out ProjectItem item))
+            if (!document.TextBuffer.Properties.TryGetProperty("p_item", out ProjectItem item))
                 return;
 
 
