@@ -7,11 +7,11 @@ using Tasks = System.Threading.Tasks;
 
 namespace TypeScriptCompileOnSave
 {
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading =true)]
     [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [Guid(PackageGuids.guidCompilePackageString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideAutoLoad(PackageGuids.guidAutoLoadString)]
+    [ProvideAutoLoad(PackageGuids.guidAutoLoadString, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideUIContextRule(PackageGuids.guidAutoLoadString,
         name: "Auto load",
         expression: "(DotNetCoreWeb | ProjectK) & (js | jsx)",
