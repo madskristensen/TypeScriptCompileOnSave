@@ -30,6 +30,8 @@ namespace TypeScriptCompileOnSave
     {
         protected override async Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
             if (await GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
                 AddConfigFile.Initialize(this, commandService);
